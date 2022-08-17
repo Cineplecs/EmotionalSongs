@@ -96,10 +96,21 @@ public class ServerMain implements Runnable{
     }
 
     public static ArrayList<Canzone> CercaBranoMusicale(String autore, int anno){
-        ArrayList<Canzone> canzoni = null;
-
-
-
+        ArrayList<Canzone> canzoni = new ArrayList<>();
+        ResultSet rs;
+        String query = String.format("select * from canzoni where autore='%s' and anno='%d'", autore, anno);
+        try{
+            PreparedStatement stmt = conn.prepareStatement(query);
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                Canzone canzone = new Canzone(rs.getString(1), rs.getString(2),
+                        rs.getInt(3), rs.getString(4), rs.getString(5),
+                        rs.getString(6));
+                canzoni.add(canzone);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return  canzoni;
     }
 

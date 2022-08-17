@@ -1,22 +1,27 @@
 package emotionalsongs;
 
 import Util.Indirizzo;
+import Util.Login;
 import Util.Utente;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 
-public class ClientControllerRegistrazione {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ClientController {
 
     @FXML
-    TextField nome, cognome, mail, userId, codFisc;
+    TextField nome, cognome, mail, userId, codFisc, userLogin;
     @FXML
-    PasswordField password;
+    PasswordField password, passwordLogin;
     @FXML
     TextField nomeVia, numeroCiv, cap, comune, provincia;
     @FXML
-    Spinner identificativo;
+    ChoiceBox identificativo;
 
     Utente utente;
     Indirizzo indirizzo;
@@ -34,8 +39,17 @@ public class ClientControllerRegistrazione {
         ClientMain.Registrazione(utente);
     }
 
-    private void riempiSpinner(){
+    @FXML
+    private void Login(){
+        Login login = new Login(userLogin.getText(), passwordLogin.getText());
+        ClientMain.Login(login);
+    }
 
+    private void riempiSpinner(){
+        identificativo.getItems().add("Via");
+        identificativo.getItems().add("Viale");
+        identificativo.getItems().add("Piazza");
+        //TODO
     }
 
     @FXML

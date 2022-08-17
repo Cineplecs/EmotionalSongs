@@ -6,7 +6,8 @@ public class Canzone {
     String album, genere, durata;
     public Canzone() {}
 
-    public Canzone(String titolo, String autore, int anno, String album, String genere, String durata) {
+    public Canzone(String titolo, String autore, int anno, String album,
+                   String genere, String durata) {
         this.titolo = titolo;
         this.autore = autore;
         this.anno = anno;

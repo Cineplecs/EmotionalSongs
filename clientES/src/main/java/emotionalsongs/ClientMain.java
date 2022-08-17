@@ -83,6 +83,10 @@ public class ClientMain extends Thread{
         }
     }
 
+    public void inserisciEmozioniBrano(){
+
+    }
+
     @Override
     public void run() {
         try {
