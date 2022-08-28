@@ -9,6 +9,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,5 +56,10 @@ public class ClientController {
     @FXML
     private void initialize(){
 
+    }
+
+    @FXML
+    private void MainMenu() throws IOException {
+        App.setRoot("mainmenu");
     }
 }

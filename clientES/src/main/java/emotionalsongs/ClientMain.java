@@ -3,6 +3,7 @@ package emotionalsongs;
 import Util.Canzone;
 import Util.Login;
 import Util.Utente;
+import javafx.scene.control.Alert;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -24,6 +25,7 @@ public class ClientMain extends Thread{
         hashMap.put("Ruolo", "registrazione");
         try{
             out.writeObject(hashMap);
+            utenteLogin = utente;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -37,10 +39,11 @@ public class ClientMain extends Thread{
             out.writeObject(hashMap);
             while(true){
                 HashMap<String, Object> ricevuto = (HashMap<String, Object>) in.readObject();
-                if(ricevuto.containsKey("UtenteLogin")){
-                    if(ricevuto.get("UtenteLogin")!=null){
-                        utenteLogin = (Utente) ricevuto.get("UtenteLogin");
-                    }
+                Boolean risultato = (Boolean) ricevuto.get("Risultato");
+                if(risultato){
+                    utenteLogin = (Utente) ricevuto.get("Utente");
+                } else {
+                    App.AlertLogin();
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -75,6 +78,7 @@ public class ClientMain extends Thread{
         hashMap = new HashMap<>();
         hashMap.put("NomePlaylist", nomePlaylist);
         hashMap.put("ListaCanzoni", lista);
+        hashMap.put("AutorePlaylist", utenteLogin.getUserId());
         hashMap.put("Ruolo", "registraPlaylist");
         try{
             out.writeObject(hashMap);
@@ -89,6 +93,7 @@ public class ClientMain extends Thread{
 
     @Override
     public void run() {
+
         try {
             socket = new Socket("LBHost.ns0.it", 14000);
             out = new ObjectOutputStream(socket.getOutputStream());
@@ -96,5 +101,6 @@ public class ClientMain extends Thread{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 }

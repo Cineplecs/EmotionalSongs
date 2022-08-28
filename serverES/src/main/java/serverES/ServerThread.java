@@ -1,6 +1,7 @@
 package serverES;
 
 import Util.Canzone;
+import Util.Login;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -23,16 +24,8 @@ public class ServerThread extends Thread {
     public void run() {
         try{
            in = new ObjectInputStream(socket.getInputStream());
-           System.out.println("in creato");
            out = new ObjectOutputStream(socket.getOutputStream());
-           System.out.println("out creato");
-           ArrayList<Canzone> prova = ServerMain.CercaBranoMusicale("ABC");
-           for(int i = 0; i < prova.size(); i++){
-               System.out.println(prova.get(i).getTitolo() + " - " + prova.get(i).getAutore());
-           }
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         while(true){
@@ -45,15 +38,32 @@ public class ServerThread extends Thread {
         }
     }
 
-    private void checkObject(HashMap hashMap) {
-        String ruolo = (String) hashMap.get("Ruolo");
+    private void checkObject(HashMap map) {
+        String ruolo = (String) map.get("Ruolo");
         switch (ruolo){
             case "registrazione":
                 System.out.println("Registrazione richiesta");
-                System.out.println(hashMap.get("Utente"));
+                System.out.println(map.get("Utente"));
                 break;
             case "login":
                 System.out.println("Login richiesto");
+                Boolean result = ServerMain.Login((Login) map.get("Login"));
+                if(result){
+                    try {
+                        map.put("Risultato", result);
+                        map.put("Utente", ServerMain.recuperaInfo((Login) map.get("Login")));
+                        out.writeObject(map);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    try {
+                        map.put("Risultato", result);
+                        out.writeObject(map);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 break;
             case "test":
                 System.out.println("Il test è andato a buon fine");

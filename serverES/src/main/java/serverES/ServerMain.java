@@ -11,6 +11,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class ServerMain implements Runnable{
 
@@ -57,7 +59,8 @@ public class ServerMain implements Runnable{
         }
     }
 
-    public static void Login(Login login){
+    public static Boolean Login(Login login){
+        Boolean result = false;
         ResultSet rs;
         String query = String.format("select exists (select 1 from utentiregistrati where userid = '%s' and password = '%s')",
                 login.getUserId(), login.getPassword());
@@ -66,14 +69,17 @@ public class ServerMain implements Runnable{
             rs = stmt.executeQuery();
             while(rs.next()){
                 if(rs.getBoolean(1)){
+                    result = true;
                     System.out.println("Login riuscito");
                 } else {
+                    result = false;
                     System.out.println("Login non riuscito");
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return result;
     }
 
     public static ArrayList<Canzone> CercaBranoMusicale(String titolo) throws SQLException {
@@ -114,8 +120,39 @@ public class ServerMain implements Runnable{
         return  canzoni;
     }
 
-    public synchronized static void RegistraPlaylist(){
+    public synchronized static void RegistraPlaylist(HashMap<String, Object> map){
+        ArrayList<Canzone> listaCanzoni = (ArrayList<Canzone>) map.get("ListaCanzoni");
+        int dimensioneArray = listaCanzoni.size()*2;
+        int counter = 0;
+        String[] arrayCanzoni = new String[dimensioneArray];
+        for(int i = 0; i < listaCanzoni.size(); i++){
+            arrayCanzoni[counter++] = listaCanzoni.get(i).getTitolo();
+            arrayCanzoni[counter++] = listaCanzoni.get(i).getAutore();
+        }
 
+        try {
+            Array array = conn.createArrayOf("VARCHAR", arrayCanzoni);
+            String query = String.format("insert into playlist values");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    public static Utente recuperaInfo(Login login){
+        ResultSet user;
+        Utente utente = null;
+        String queryUser = String.format("select * from utentiregistrati where userid='%s' and password='%s",
+                login.getUserId(), login.getPassword());
+        try {
+            PreparedStatement stmt2 = conn.prepareStatement(queryUser);
+            user = stmt2.executeQuery();
+            while (user.next()) {
+                //TODO completare dati da recuperare per utente
+                utente = new Utente();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return utente;
+    }
 }

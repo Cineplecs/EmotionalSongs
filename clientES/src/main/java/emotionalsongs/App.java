@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -17,8 +18,10 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary"), 640, 480);
+        scene = new Scene(loadFXML("primary"), 1200, 675);
         stage.setScene(scene);
+        stage.setMinHeight(675);
+        stage.setMinWidth(1200);
         stage.show();
         ClientMain clientMain = new ClientMain();
         clientMain.start();
@@ -35,6 +38,12 @@ public class App extends Application {
 
     public static void main(String[] args) {
         launch();
+    }
+
+    public static void AlertLogin(){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText("Login non riuscito");
+        alert.show();
     }
 
 }
